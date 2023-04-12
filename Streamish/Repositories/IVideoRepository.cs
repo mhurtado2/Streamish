@@ -1,4 +1,6 @@
-﻿using Streamish.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Streamish.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Streamish.Repositories
@@ -13,5 +15,9 @@ namespace Streamish.Repositories
         public List<Video> GetAllWithComments();
 
         Video GetVideoByIdWithComments(int id);
+
+        public List<Video> Search(string criterion, bool sortDescending);
+
+        public List<Video> Hottest(DateTime date);
     }
 }
