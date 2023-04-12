@@ -124,7 +124,7 @@ namespace Streamish.Repositories
 
                        up.Name, up.Email, up.DateCreated AS UserProfileDateCreated,
                        up.ImageUrl AS UserProfileImageUrl,
-                        
+
                        c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserProfileId
                   FROM Video v 
                        JOIN UserProfile up ON v.UserProfileId = up.Id
@@ -140,11 +140,12 @@ namespace Streamish.Repositories
                         Video video = null;
                         while (reader.Read())
                         {
-                            if (reader.Read())
+                            var videoId = DbUtils.GetInt(reader, "VideoId");
+                            if (video == null)
                             {
                                 video = new Video()
                                 {
-                                    Id = id,
+                                    Id = videoId,
                                     Title = DbUtils.GetString(reader, "Title"),
                                     Description = DbUtils.GetString(reader, "Description"),
                                     DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
@@ -161,19 +162,21 @@ namespace Streamish.Repositories
                                     Comments = new List<Comment>()
                                 };
 
+                            }
+
+                            // must be out of while loop, because its gonna run once in the if statement above because its
+                           // int a while staement its gonna keep running until the comment id is null or there are no more comments
+
                                 if (DbUtils.IsNotDbNull(reader, "CommentId"))
                                 {
                                     video.Comments.Add(new Comment()
                                     {
                                         Id = DbUtils.GetInt(reader, "CommentId"),
                                         Message = DbUtils.GetString(reader, "Message"),
-                                        VideoId = id,
+                                        VideoId = videoId,
                                         UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId")
                                     });
                                 }
-
-                            }
-
                         }
                         return video;
                     }
@@ -181,6 +184,7 @@ namespace Streamish.Repositories
             }
         }
 
+  
 
         public List<Video> GetAllWithComments()
         {
