@@ -1,71 +1,63 @@
-import { useState} from "react";
-import { addVideo, getAllVideos } from "../modules/videoManager";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { addVideo } from "../modules/videoManager";
 
+const VideoForm = ({ getVideos }) => {
+  const emptyVideo = {
+    title: '',
+    description: '',
+    url: ''
+  };
 
- export const VideoForm = ({getVideos}) => {
-    const [newVideo, setNewVideo] = useState({
-        title: "",
-        description: "",
-        url: "",
-    })
+  const [video, setVideo] = useState(emptyVideo);
+  const navigate = useNavigate();
 
-const addNewVideoButton = () => { 
-   addVideo(newVideo)
-  .then(() => {
-      getVideos()
-  }
-  )
-}
+  const handleInputChange = (evt) => {
+    const value = evt.target.value;
+    const key = evt.target.id;
 
-return <article>
-<h2>Add A New Video</h2>
-<form>
-    
-    <label>
-    <input 
-    type = "text"
-    placeholder="Video Title"
-    onChange={(changeEvent) => {
-        const copy = {...newVideo}
-        copy.title = changeEvent.target.value
-        setNewVideo(copy)
-    }}
-    />
-    </label>
-<label>
-    <input 
-    type = "text"
-    placeholder="Video Description"
-    onChange={(changeEvent) => {
-        const copy = {...newVideo}
-        copy.description =changeEvent.target.value
-        setNewVideo(copy)
-    }}
-    />
-</label>
-<label>
-    <input 
-    type = "text"
-    placeholder="Video Url"
-    onChange={(changeEvent) => {
-        const copy = {...newVideo}
-        copy.url = changeEvent.target.value
-        setNewVideo(copy)
-    }}
-    />
-</label>
-<button
-    onClick={() => 
-        addNewVideoButton()
-        }>
-   Add New Video
-</button>
+    const videoCopy = { ...video };
 
+    videoCopy[key] = value;
+    setVideo(videoCopy);
+  };
 
-</form>
-</article>
-}
+  const handleSave = (evt) => {
+    evt.preventDefault();
 
+    addVideo(video).then((p) => {
+        // Navigate the user back to the home route
+        navigate("/");
+    });
+  };
+
+  return (
+    <Form>
+      <FormGroup>
+        <Label for="title">Title</Label>
+        <Input type="text" name="title" id="title" placeholder="video title"
+          value={video.title}
+          onChange={handleInputChange} />
+      </FormGroup>
+      <FormGroup>
+        <Label for="url">URL</Label>
+        <Input type="text" name="url" id="url" placeholder="video link" 
+          value={video.url}
+          onChange={handleInputChange} />
+      </FormGroup>
+      <FormGroup>
+        <Label for="description">Description</Label>
+        <Input type="textarea" name="description" id="description"
+          value={video.description}
+          onChange={handleInputChange} />
+      </FormGroup>
+      <Button className="btn btn-primary" onClick={handleSave}>Submit</Button>
+    </Form>
+  );
+};
+
+export default VideoForm;
 
 
 
