@@ -17,6 +17,15 @@ export const getAllVideosWithComments = () => {
       .then((res) => res.json())
   };
 
+  
+// export const getVideoByIdWithComments = () => {
+//   return fetch(`${baseUrl}/Video/GetVideoByIdWithComments/{id}`)
+//     .then((res) => res.json())
+// };
+
+export const getVideo = (id) => {
+  return fetch(`${baseUrl}/getvideobyidwithcomments/${id}`).then((res) => res.json());
+};
 
 export const addVideo = (video) => {
   return fetch(baseUrl, {
