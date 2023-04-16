@@ -110,6 +110,193 @@ namespace Streamish.Repositories
             }
         }
 
+        public List<UserProfile> GetUsersWithVideos()
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                SELECT
+                       up.Id AS UserId, up.Name, up.Email, up.DateCreated AS UserProfileDateCreated,
+                       up.ImageUrl AS UserProfileImageUrl,
+
+                 v.Id AS VideoId, v.Title, v.Description, v.Url, 
+                       v.DateCreated AS VideoDateCreated, v.UserProfileId As VideoUserProfileId
+                  FROM UserProfile up
+                       JOIN Video v ON v.UserProfileId = up.Id
+            ";
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        var users = new List<UserProfile>();
+                        while (reader.Read())
+                        {
+                            var userId = DbUtils.GetInt(reader, "userId");
+
+                            var existingUser = users.FirstOrDefault(p => p.Id == userId);
+                            if (existingUser == null)
+                            {
+                                existingUser = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "VideoUserProfileId"),
+                                    Name = DbUtils.GetString(reader, "Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+                                    ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
+                                    Videos = new List<Video>()
+                                };
+                                users.Add(existingUser);
+                            }
+
+                                if (DbUtils.IsNotDbNull(reader, "VideoId"))
+                                {
+                                    existingUser.Videos.Add(new Video()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "VideoId"),
+                                        Title = DbUtils.GetString(reader, "Title"),
+                                        Description = DbUtils.GetString(reader, "Description"),
+                                        DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
+                                        Url = DbUtils.GetString(reader, "Url"),
+                                        UserProfileId = DbUtils.GetInt(reader, "VideoUserProfileId"),
+                                    });
+                                }
+                    
+                          };
+
+
+                        return users;
+                    }
+                }
+            }
+        }
+
+        public UserProfile GetUserByIdWithVideos(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT  up.Id AS UserId, up.Name, up.Email, up.DateCreated AS UserProfileDateCreated,
+                       up.ImageUrl AS UserProfileImageUrl,
+
+                 v.Id AS VideoId, v.Title, v.Description, v.Url, 
+                       v.DateCreated AS VideoDateCreated, v.UserProfileId As VideoUserProfileId
+                  FROM UserProfile up
+                       JOIN Video v ON v.UserProfileId = up.Id 
+                      
+                           WHERE up.Id = @Id";
+
+                    DbUtils.AddParameter(cmd, "@Id", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        UserProfile userProfile = null;
+                        while (reader.Read())
+                        {
+                            var userId = DbUtils.GetInt(reader, "UserId");
+
+                            if (userProfile == null)
+                            {
+                                userProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "userId"),
+                                    Name = DbUtils.GetString(reader, "Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+                                    Videos = new List<Video>(),
+                                };
+                            }
+
+                            if (DbUtils.IsNotDbNull(reader, "VideoId"))
+                            {
+                                userProfile.Videos.Add(new Video()
+                                {
+                                    Id = DbUtils.GetInt(reader, "VideoId"),
+                                    Title = DbUtils.GetString(reader, "Title"),
+                                    Description = DbUtils.GetString(reader, "Description"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
+                                    Url = DbUtils.GetString(reader, "Url"),
+                                    UserProfileId = DbUtils.GetInt(reader, "VideoUserProfileId"),
+                                });
+                            }
+                        }
+
+                        return userProfile;
+                    }
+                }
+            }
+        }
+
+        //public UserProfile GetUserByIdWithVideosAndComments(int id)
+        //{
+        //    using (var conn = Connection)
+        //    {
+        //        conn.Open();
+        //        using (var cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = @"SELECT up.Id AS UserId, up.Name, up.Email, up.DateCreated AS UserProfileDateCreated, up.ImageUrl AS UserProfileImageUrl,
+        //                                v.Id AS VideoId, v.Title, v.Description, v.Url, v.DateCreated AS VideoDateCreated, v.UserProfileId As VideoUserProfileId,
+        //                                c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserProfileId, c.VideoId AS CommentVideoId
+        //                                FROM UserProfile up
+        //                                JOIN Video v ON v.UserProfileId = up.Id
+        //                                LEFT JOIN Comment c on c.VideoId = v.id
+        //                                WHERE up.Id = @Id";
+
+        //            DbUtils.AddParameter(cmd, "@Id", id);
+
+        //            using (SqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                UserProfile user = null;
+        //                while (reader.Read())
+        //                {
+        //                    var userId = DbUtils.GetInt(reader, "UserId");
+        //                    if (user == null)
+        //                    {
+        //                        user = new UserProfile()
+        //                        {
+        //                            Id = DbUtils.GetInt(reader, "UserId"),
+        //                            Name = DbUtils.GetString(reader, "Name"),
+        //                            Email = DbUtils.GetString(reader, "Email"),
+        //                            ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
+        //                            DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+        //                            Videos = new List<Video>(),
+        //                            Comments = new List<Comment>()
+        //                        };
+        //                    }
+        //                    if (DbUtils.IsNotDbNull(reader, "VideoId"))
+        //                    {
+        //                        user.Videos.Add(new Video()
+        //                        {
+        //                            Id = DbUtils.GetInt(reader, "VideoId"),
+        //                            Title = DbUtils.GetString(reader, "Title"),
+        //                            Description = DbUtils.GetString(reader, "Description"),
+        //                            DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
+        //                            Url = DbUtils.GetString(reader, "Url"),
+        //                            UserProfileId = DbUtils.GetInt(reader, "VideoUserProfileId"),
+        //                        });
+        //                    }
+        //                    if (DbUtils.IsNotDbNull(reader, "CommentId"))
+        //                    {
+        //                        user.Comments.Add(new Comment()
+        //                        {
+        //                            Id = DbUtils.GetInt(reader, "CommentId"),
+        //                            Message = DbUtils.GetString(reader, "Message"),
+        //                            VideoId = DbUtils.GetInt(reader, "CommentVideoId"),
+        //                            UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId")
+        //                        });
+        //                    }
+
+        //                }
+        //                return user;
+        //            }
+        //        }
+        //    }
+        //}
 
 
     }

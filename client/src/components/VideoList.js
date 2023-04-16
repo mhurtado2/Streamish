@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Video from './Video';
 import { getAllVideos, getAllVideosWithComments } from "../modules/videoManager";
+import SearchVideos from "./SearchVideos";
 
 
 
@@ -27,6 +28,9 @@ const VideoList = () => {
 
   return (
     <div className="container">
+        <div className="row justify-content-center">
+          <SearchVideos />
+      </div>
       <div className="row justify-content-center">
         {videos.map((video) => (
           <Video video={video} key={video.id} />
