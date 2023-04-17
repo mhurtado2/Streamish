@@ -20,14 +20,17 @@ const UserVideos = () => {
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-sm-12 col-lg-6">
+          <h2>Videos Submitted by {user.name}</h2>
             {user?.videos?.map((video) => (
-              // <Video video={video} key={video.id} />    
+              <div>
+              <p> {video.title} </p>
               <iframe className="video"
               src={video.url}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen />    
+              </div>
             ))}
      
         </div>
