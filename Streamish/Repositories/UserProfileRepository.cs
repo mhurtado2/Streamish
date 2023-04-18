@@ -125,43 +125,44 @@ namespace Streamish.Repositories
             }
         }
 
-        //public UserProfile GetById(int id)
-        //{
-        //    using (var conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (var cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"
-        //               SELECT up.Id, up.[NAME], up.Email, up.ImageUrl, up.DateCreated
+        public UserProfile GetById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT up.Id,Up.FirebaseUserId, up.[NAME], up.Email, up.ImageUrl, up.DateCreated
                        
-        //         FROM UserProfile up 
+                 FROM UserProfile up 
                       
-        //                   WHERE up.Id = @Id";
+                           WHERE up.Id = @Id";
 
-        //            DbUtils.AddParameter(cmd, "@Id", id);
+                    DbUtils.AddParameter(cmd, "@Id", id);
 
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
 
-        //                UserProfile userProfile = null;
-        //                if (reader.Read())
-        //                {
-        //                    userProfile = new UserProfile()
-        //                    {
-        //                        Id = DbUtils.GetInt(reader, "Id"),
-        //                        Name = DbUtils.GetString(reader, "Name"),
-        //                        Email = DbUtils.GetString(reader, "Email"),
-        //                        DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
-        //                        ImageUrl = DbUtils.GetString(reader, "ImageUrl"),
-        //                    };
-        //                }
+                        UserProfile userProfile = null;
+                        if (reader.Read())
+                        {
+                            userProfile = new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "Id"),
+                                Name = DbUtils.GetString(reader, "Name"),
+                                FirebaseUserId = DbUtils.GetString(reader, "FirebaseUserId"),
+                                Email = DbUtils.GetString(reader, "Email"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
+                                ImageUrl = DbUtils.GetString(reader, "ImageUrl"),
+                            };
+                        }
 
-        //                return userProfile;
-        //            }
-        //        }
-        //    }
-        //}
+                        return userProfile;
+                    }
+                }
+            }
+        }
 
         //pritesh edited thus one
         public void Add(UserProfile userProfile)

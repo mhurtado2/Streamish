@@ -33,31 +33,142 @@ export const getAllVideos = () => {
   });
 };
 
+//old one
+/*
 export const getAllVideosWithComments = () => {
     return fetch(`${baseUrl}/getwithcomments`)
       .then((res) => res.json())
   };
+ */
 
-
-  export const searchAllVideos = (queryString, sortDescBool) => {
-    return fetch(`${baseUrl}/search?q=${queryString}&sortDesc=${sortDescBool}`)
-      .then((res) => res.json())
+  export const getAllVideosWithComments = () => {
+    return getToken().then((token) => {
+    return fetch (`${baseUrl}/getwithcomments`, {
+      method:"GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }). then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      } else {
+        throw new Error(
+          "An unknown error occurred while trying to get quotes.",
+        );
+      }
+    });
+    });
   };
 
+//old one
+/*
+export const searchAllVideos = (queryString, sortDescBool) => {
+  return fetch(`${baseUrl}/search?q=${queryString}&sortDesc=${sortDescBool}`)
+    .then((res) => res.json())
+};
+ */
 
+export const searchAllVideos = (queryString, sortDescBool) => {
+  return getToken().then((token) => {
+  return fetch (`${baseUrl}/search?q=${queryString}&sortDesc=${sortDescBool}`, {
+    method:"GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }). then((resp) => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(
+        "An unknown error occurred while trying to get quotes.",
+      );
+    }
+  });
+  });
+};
+
+
+
+//old one 
+/* 
 export const getVideo = (id) => {
   return fetch(`${baseUrl}/getvideobyidwithcomments/${id}`).then((res) => res.json());
 };
+*/
 
+export const getVideo = (id) => {
+  return getToken().then((token) => {
+  return fetch (`${baseUrl}/getvideobyidwithcomments/${id}`, {
+    method:"GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }). then((resp) => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(
+        "An unknown error occurred while trying to get quotes.",
+      );
+    }
+  });
+  });
+};
+
+
+//old one
+/*
 export const getUserById  = (id) => {
   return fetch(`${userBaseUrl}/${id}`).then((res) => res.json());
+};
+*/
+
+export const getUserById = (id) => {
+  return getToken().then((token) => {
+  return fetch (`${userBaseUrl}/${id}`, {
+    method:"GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }). then((resp) => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(
+        "An unknown error occurred while trying to get quotes.",
+      );
+    }
+  });
+  });
 };
 
 
 
-//new one
-export const getUserWithVideos  = (id) => {
-  return fetch(`${userBaseUrl}/getuserbyidwithvideos/${id}`).then((res) => res.json());
+
+//old one
+/* 
+// export const getUserWithVideos  = (id) => {
+//   return fetch(`${userBaseUrl}/getuserbyidwithvideos/${id}`).then((res) => res.json());
+// };
+*/
+
+export const getUserWithVideos = (id) => {
+  return getToken().then((token) => {
+  return fetch (`${userBaseUrl}/getuserbyidwithvideos/${id}`, {
+    method:"GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }). then((resp) => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(
+        "An unknown error occurred while trying to get quotes.",
+      );
+    }
+  });
+  });
 };
 
 
