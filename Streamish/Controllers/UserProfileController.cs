@@ -108,7 +108,9 @@ namespace Streamish.Controllers
         {
             // All newly registered users start out as a "user" user type (i.e. they are not admins)
             //userProfile.UserTypeId = UserType.USER_TYPE_ID;
+            userProfile.DateCreated = DateTime.Now;
             _userProfileRepository.Add(userProfile);
+
             return CreatedAtAction(
                 nameof(GetByFirebaseUserId), new { firebaseUserId = userProfile.FirebaseUserId }, userProfile);
         }

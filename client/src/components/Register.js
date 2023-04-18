@@ -10,6 +10,8 @@ export default function Register() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  // const [createdAt, setCreatedAt] = useState(new Date());
+
 
   const registerClick = (e) => {
     e.preventDefault();
