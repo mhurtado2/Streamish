@@ -4,10 +4,15 @@ import VideoList from "./VideoList";
 import VideoForm from "./VideoForm";
 import VideoDetails from "./VideoDetails";
 import UserVideos from "./UserVideos";
+import Login from "./Login";
+import Register from "./Register";
+
 
 const ApplicationViews = () => {
   return (
     <Routes>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
       <Route path="/" >
         <Route index element={<VideoList/>} />
         <Route path="videos">

@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Streamish.Repositories;
 using Streamish.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Streamish.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserProfileController : ControllerBase
@@ -21,16 +24,28 @@ namespace Streamish.Controllers
             return Ok(_userProfileRepository.GetAll());
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+
+        [HttpGet("{firebaseUserId}")]
+        public IActionResult GetByFirebaseUserId(string firebaseUserId)
         {
-            var userProfile = _userProfileRepository.GetById(id);
+            var userProfile = _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
             if (userProfile == null)
             {
                 return NotFound();
             }
             return Ok(userProfile);
         }
+
+        //[HttpGet("{id}")]
+        //public IActionResult Get(int id)
+        //{
+        //    var userProfile = _userProfileRepository.GetById(id);
+        //    if (userProfile == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(userProfile);
+        //}
 
         [HttpGet("GetUsersWithVideos")]
         public IActionResult GetWithVideos()
@@ -57,12 +72,52 @@ namespace Streamish.Controllers
 
 
 
-        [HttpPost]
-        public IActionResult Post(UserProfile userProfile)
+        //[HttpPost]
+        //public IActionResult Post(UserProfile userProfile)
+        //{
+        //    _userProfileRepository.Add(userProfile);
+        //    return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
+        //}
+
+
+        [HttpGet("Me")]
+        public IActionResult Me()
         {
-            _userProfileRepository.Add(userProfile);
-            return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
+            var userProfile = GetCurrentUserProfile();
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userProfile);
         }
 
+        [HttpGet("DoesUserExist/{firebaseUserId}")]
+        public IActionResult DoesUserExist(string firebaseUserId)
+        {
+            var userProfile = _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult Register(UserProfile userProfile)
+        {
+            // All newly registered users start out as a "user" user type (i.e. they are not admins)
+            //userProfile.UserTypeId = UserType.USER_TYPE_ID;
+            _userProfileRepository.Add(userProfile);
+            return CreatedAtAction(
+                nameof(GetByFirebaseUserId), new { firebaseUserId = userProfile.FirebaseUserId }, userProfile);
+        }
+
+        private UserProfile GetCurrentUserProfile()
+        {
+            var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
+        }
     }
+
 }

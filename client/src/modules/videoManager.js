@@ -1,11 +1,37 @@
+import { getToken } from "./authManager";
+
 const baseUrl = '/api/video';
 const userBaseUrl ='/api/UserProfile';
 
+
+//old getAllVideos incase you need it 
+/*
 export const getAllVideos = () => {
   return fetch(baseUrl)
     .then((res) => res.json())
 };
+*/
 
+
+//getAllVideos with authorization
+export const getAllVideos = () => {
+  return getToken().then((token) => {
+  return fetch (baseUrl, {
+    method:"GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }). then((resp) => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(
+        "An unknown error occurred while trying to get quotes.",
+      );
+    }
+  });
+  });
+};
 
 export const getAllVideosWithComments = () => {
     return fetch(`${baseUrl}/getwithcomments`)
@@ -35,7 +61,8 @@ export const getUserWithVideos  = (id) => {
 };
 
 
-
+//old add video if you need it 
+/*
 export const addVideo = (video) => {
   return fetch(baseUrl, {
     method: "POST",
@@ -45,4 +72,28 @@ export const addVideo = (video) => {
     body: JSON.stringify(video),
   });
 };
+*/
 
+//new addVideo with Authorization
+export const addVideo = (video) => {
+  return getToken().then((token) => {
+    return fetch(baseUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(video),
+    }).then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      } else if (resp.status === 401) {
+        throw new Error("Unauthorized");
+      } else {
+        throw new Error(
+          "An unknown error occurred while trying to save a new quote.",
+        );
+      }
+    });
+  })
+};

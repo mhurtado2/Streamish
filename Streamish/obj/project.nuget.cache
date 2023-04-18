@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "CCQmSM7KPE1avy/cb+bPogLafmG6tDWRpg7lyVJ01jXQC4htVqIub4y6oqFmiU4j+HmJATOTdzeQxWUkgbZRKw==",
+  "dgSpecHash": "JBHvIxpf65jj0mNQ6TdGV5Ef9bpFL4Yun1AxhmXOBMpLqG4qGOqT33dJQyKjcjGCpyfWm405CzOjbPwTQJ0+uQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\15204\\workspace\\csharp\\Streamish\\Streamish\\Streamish.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\15204\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\15204\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
+    "C:\\Users\\15204\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
     "C:\\Users\\15204\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\15204\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\15204\\.nuget\\packages\\microsoft.data.sqlclient\\5.1.1\\microsoft.data.sqlclient.5.1.1.nupkg.sha512",
